@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package payment_prefrence;
+
+option go_package = "payment_prefrence";
+
+message PaymentPreferenceDetailRequest {
+    optional uint32 id = 1;
+    optional uint32 user_id = 2;
+    optional string preference_type = 3;
+    optional string payment_method_type = 4;
+    optional string created_at = 5;
+    optional uint32 created_by = 6;
+    optional string updated_at = 7;
+    optional uint32 updated_by = 8;
+    optional bool active = 9;
+}
+
+message PaymentPreferenceDetailResponse {
+    optional uint32 id = 1;
+    optional uint32 user_id = 2;
+    optional string preference_type = 3;
+    optional string payment_method_type = 4;
+    optional string created_at = 5;
+    optional uint32 created_by = 6;
+    optional string updated_at = 7;
+    optional uint32 updated_by = 8;
+    optional bool active = 9;
+}
+
+message CreatePreferenceRequest {
+    optional PaymentPreferenceDetailRequest preference_details = 1;
+}
+
+message CreatePreferenceResponse {
+    optional uint32 id = 1;
+    optional string preference_type = 2;
+    optional bool active = 3;
+}
+
+message EditPreferenceStatusRequest {
+    uint32 id = 1;
+}
+
+message EditPreferenceStatusResponse {
+    optional PaymentPreferenceDetailResponse response = 1;
+}
+
+
+message ChangePreferenceTypeRequest {
+    uint32 id = 1;
+    optional PaymentPreferenceDetailRequest preference_details = 2;
+}
+
+message ChangePreferenceTypeResponse {
+    optional PaymentPreferenceDetailResponse response = 1;
+}
+
+message ReadPreferenceByUserIdRequest {
+    uint32 user_id = 1;
+    string payment_method_type = 2;
+}
+
+message ReadPreferenceByUserIdResponse {
+    optional PaymentPreferenceDetailResponse response = 1;
+}
+
+message ReadPreferenceListRequest {
+    optional string  filter = 1;
+    optional string  order_by = 2;
+    optional string  order_direction = 3;
+    optional uint32  limit = 4;
+    optional uint32  page = 5;
+    optional uint32 user_id = 6;
+    optional string preference_type = 7;
+    optional bool payment_method_type = 8;
+    optional bool active = 9;
+}
+
+message Meta {
+    uint32 current_items = 1;
+    uint32 limit = 2;
+    uint32 page = 3;
+    uint32 total_items = 4;
+}
+
+message ReadPreferenceListResponse {
+    optional Meta meta = 1;
+    repeated PaymentPreferenceDetailResponse response = 2;
+}
+
+
+service PaymentPreferenceService {
+    rpc CreatePreference (CreatePreferenceRequest) returns (CreatePreferenceResponse);
+    rpc EditPreferenceStatus (EditPreferenceStatusRequest) returns (EditPreferenceStatusResponse);
+    rpc ChangePreferenceType (ChangePreferenceTypeRequest) returns (ChangePreferenceTypeResponse);
+    rpc ReadPreferenceList (ReadPreferenceListRequest) returns (ReadPreferenceListResponse);
+    rpc ReadPreferenceByUserId (ReadPreferenceByUserIdRequest) returns (ReadPreferenceByUserIdResponse);
+}

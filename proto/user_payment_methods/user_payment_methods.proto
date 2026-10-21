@@ -1,0 +1,195 @@
+syntax = "proto3";
+
+package user_payment_methods;
+
+option go_package = "user_payment_methods";
+
+
+message UserPaymentMethodResponse {
+    optional uint32 id = 1;
+    optional PaymentPreference payment_preference = 2;
+    optional string payment_method_type = 3;
+    optional User user = 4;
+    optional string status  = 5;
+    optional bool is_default = 6;
+    repeated UserPaymentMethodOptions payment_method_options = 7;
+    optional string created_at  = 8;
+    optional int32 created_by  = 9;
+    optional string updated_at  = 10; 
+    optional int32 deleted_by  = 11;
+    optional string deleted_at  = 12;
+}
+
+message UserPaymentMethodOptions {
+    optional uint32 id = 1;
+    optional uint32 user_payment_method_id = 2;
+    optional string key = 3;
+    optional string value = 4;
+    optional string created_at = 5;
+    optional string updated_at = 6;
+}
+
+message PaymentPreference {
+    optional uint32 id = 1;
+    optional User user = 2;
+    optional string preference_type = 3;
+    optional bool active = 4;
+}
+
+message User {
+    optional uint32 id = 1;
+    optional string first_name = 2;
+    optional string last_name = 3;
+    optional bool active = 4;
+    optional string username = 5;
+}
+
+message UserPaymentMethodRequest {
+    optional uint32 user_id = 1;
+    optional string payment_method_type = 2;
+    optional string application_number = 3;
+    optional string account_number = 4;
+    optional string account_name = 5;
+    optional string account_currency = 6;
+    optional string merchant_id = 7;
+}
+
+message CreateUserPaymentMethodRequest {
+    UserPaymentMethodRequest user_payment_method_data = 1; 
+}
+
+message CreateUserPaymentMethodResponse {
+    string message = 1;
+}
+
+message ReadUserPaymentMethodRequest {
+    uint32 id = 1;
+}
+
+message ReadUserPaymentMethodResponse {
+    UserPaymentMethodResponse user_payment_method_data = 1;
+}
+
+message ReadUserActivePaymentMethodRequest {
+    uint32 user_id = 1;
+    optional string payment_method_type = 2;
+    optional bool is_default = 3;
+}
+
+message PaymentMethodDetails{
+    optional uint32 id = 1;
+    optional uint32 user_id = 2;
+    optional string payment_method_type = 3;
+    optional string account_number = 4;
+    optional string account_name = 5;
+    optional string account_currency = 6;
+    optional string merchant_id = 7;
+    optional string auth_login_id = 8;
+    optional string auth_transaction_key = 9;
+    optional string auth_client_key = 10;
+    uint32 is_default_payment_method = 11;
+}
+
+message ReadUserActivePaymentMethodResponse {
+    repeated PaymentMethodDetails response = 1;
+}
+
+message ReadUserCurrentPaymentMethodRequest {
+    string preference = 1;
+    uint32 id = 2;
+    string payment_method_type = 3;
+    optional uint32 user_id = 4;
+}
+
+message ReadUserCurrentPaymentMethodResponse {
+    UserPaymentMethodResponse user_payment_method_data = 1;
+}
+
+message UpdateUserPaymentMethodRequest {
+    uint32 id = 1;
+    UserPaymentMethodRequest user_payment_method_data = 2;
+}
+
+message UpdateUserPaymentMethodResponse {
+    UserPaymentMethodResponse user_payment_method_data = 1;
+}
+
+message SoftDeleteUserPaymentMethodRequest {
+    uint32 id = 1;
+}
+
+message SoftDeleteUserPaymentMethodResponse {
+    bool success = 1;
+}
+
+message StoreAuthorizenetAuthAccessRequest {
+    string auth_login_id = 1;
+    string auth_transaction_key = 2;
+    string auth_client_key = 3;
+    uint32 user_id = 4;
+    string payment_method_type = 5;
+}
+
+message StoreAuthorizenetAuthAccessResponse {
+    string message = 1;
+}
+
+message UpdateAuthorizenetAuthAccessRequest {
+    string auth_login_id = 1;
+    string auth_transaction_key = 2;
+    string auth_client_key = 3;
+    uint32 user_id = 4;
+    string payment_method_type = 5;
+}
+
+message UpdateAuthorizenetAuthAccessResponse {
+    string message = 1;
+}
+
+message ListUserPaymentMethodsRequest {
+    optional string filter = 1;
+    optional string order_by = 2;
+    optional string order_direction = 3;
+    optional string payment_method_type = 4;
+    optional uint32 user_id = 5;
+    optional uint32 payment_preference_id = 6;
+    optional int32 page = 7;
+    optional int32 limit = 8;
+    optional string start_date = 9;
+    optional string end_date = 10;
+    optional string status = 11;
+}
+
+message Meta {
+    uint32 page = 2;
+    uint32 limit = 1;
+    uint32 current_items = 3;
+    uint32 total_items = 4;
+}
+
+message ListUserPaymentMethodsResponse {
+    optional Meta meta = 1;
+    repeated UserPaymentMethodResponse user_payment_methods = 2;
+}
+
+message SetDefaultPaymentMethodRequest {
+    string payment_method = 1;
+    optional uint32 user_id = 2;
+}
+
+message SetDefaultPaymentMethodResponse {
+    string message = 1;
+}
+
+service UserPaymentMethodsService {
+    rpc CreateUserPaymentMethod (CreateUserPaymentMethodRequest) returns (CreateUserPaymentMethodResponse);
+    rpc ReadUserPaymentMethod (ReadUserPaymentMethodRequest) returns (ReadUserPaymentMethodResponse);
+    rpc ReadUserActivePaymentMethod (ReadUserActivePaymentMethodRequest) returns (ReadUserActivePaymentMethodResponse);
+    rpc ReadUserCurrentPaymentMethod (ReadUserCurrentPaymentMethodRequest) returns (ReadUserCurrentPaymentMethodResponse);
+    rpc UpdateUserPaymentMethod (UpdateUserPaymentMethodRequest) returns (UpdateUserPaymentMethodResponse);
+    rpc SoftDeleteUserPaymentMethod (SoftDeleteUserPaymentMethodRequest) returns (SoftDeleteUserPaymentMethodResponse);
+    rpc StoreAuthorizenetAuthAccess (StoreAuthorizenetAuthAccessRequest) returns (StoreAuthorizenetAuthAccessResponse);
+    rpc UpdateAuthorizenetAuthAccess (UpdateAuthorizenetAuthAccessRequest) returns (UpdateAuthorizenetAuthAccessResponse);
+    rpc ListUserPaymentMethods (ListUserPaymentMethodsRequest) returns (ListUserPaymentMethodsResponse);
+    rpc SetDefaultPaymentMethod (SetDefaultPaymentMethodRequest) returns (SetDefaultPaymentMethodResponse);
+}

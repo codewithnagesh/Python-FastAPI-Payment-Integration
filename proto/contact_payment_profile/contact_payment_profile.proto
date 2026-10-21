@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+package contact_payment_profile;
+
+option go_package = "contact_payment_profile";
+
+
+message CreateContactProfileRequest{
+    string payment_method_type = 1;
+    optional uint32 appointment_id = 2;
+    optional string locale = 3;
+    optional string payment_handle_token = 4; 
+    optional string payment_type = 5; 
+    optional string payment_method = 6;
+    optional string amount = 7;
+    optional string transaction_type = 8;
+    optional string card_number = 9;
+    optional string data_descriptor = 10;
+    optional string data_value = 11;
+    optional string auth_pay_method = 12;
+    optional uint32 invoice_id = 13;
+}
+
+message CreateContactProfileResponse {
+    string response = 1;
+}
+
+message ContactPaymentProfileDetails{
+    optional int32 id = 1;
+    optional string key = 2;
+    optional string value = 3;
+    optional string created_at = 4;
+}
+
+message User {
+    uint32 id = 1;
+    optional string first_name = 2;
+    optional string last_name = 3;
+    optional string username = 4;
+}
+
+message ContactPaymentProfile {
+    optional int32 id = 1;
+    optional string payment_method_type = 2;
+    optional int32 user_id = 3;
+    optional string profile_id = 4;
+    optional string payment_profile_id = 5;
+    optional string reference_number = 6;
+    optional User user = 7;
+    repeated ContactPaymentProfileDetails profile_details = 8;
+    optional string created_at = 9;
+    optional string updated_at = 10;
+}
+
+message UpdateContactPaymentProfileRequest {
+    int32 id = 1;
+    optional ContactPaymentProfile contact_payment_profile =2;
+}
+
+message ReadContactPaymentProfileRequest {
+    int32 id = 1;
+}
+
+message DeleteContactPaymentProfileRequest {
+    int32 id = 1;
+}
+
+message DeleteContactPaymentProfileResponse {
+    bool success = 1;
+}
+
+message ContactPaymentProfileResponse{
+    ContactPaymentProfile profile = 1;
+}
+
+message ReadContactPaymentProfileByUserIdRequest {
+    int32 user_id = 1;
+}
+
+message ReadContactPaymentProfileByUserIdResponse {
+    repeated ContactPaymentProfile payment_profiles = 1;
+}
+
+message ListContactPaymentProfilesRequest {
+    optional string filter = 1;
+    optional string order_by = 2;
+    optional string order_direction = 3;
+    optional uint32 user_id = 4;
+    optional uint32 page = 5;
+    optional uint32 limit = 6;
+}
+
+message Meta {
+    uint32 limit = 1;
+    uint32 page = 2;
+    uint32 current_items = 3;
+    uint32 total_items = 4;
+}
+
+message ListContactPaymentProfilesResponse {
+    Meta meta = 1;
+    repeated ContactPaymentProfile contact_payment_profiles = 2;
+}
+
+service ContactPaymentProfileService {
+    rpc CreateContactProfile (CreateContactProfileRequest) returns (CreateContactProfileResponse);
+    rpc ReadContactPaymentProfile (ReadContactPaymentProfileRequest) returns (ContactPaymentProfileResponse);
+    rpc UpdateContactPaymentProfile (UpdateContactPaymentProfileRequest) returns (ContactPaymentProfileResponse);
+    rpc DeleteContactPaymentProfile (DeleteContactPaymentProfileRequest) returns (DeleteContactPaymentProfileResponse);
+    rpc ReadContactPaymentProfileByUserId (ReadContactPaymentProfileByUserIdRequest) returns (ReadContactPaymentProfileByUserIdResponse);
+    rpc ListContactPaymentProfiles (ListContactPaymentProfilesRequest) returns (ListContactPaymentProfilesResponse);
+}

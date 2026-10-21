@@ -1,0 +1,228 @@
+syntax = "proto3";
+
+package transactions;
+
+option go_package = "transactions";
+
+message PaymentDetails {
+    int32 invoice_id = 1;
+    optional string merchantRefNum = 2;
+    optional uint32 amount = 3; 
+    optional string currencyCode = 4; 
+    optional bool dupCheck = 5;   
+    optional bool settleWithAuth = 6;
+    optional string paymentHandleToken = 7;
+    optional string customerIp = 8;
+    optional string description = 9;
+    optional string card_number = 10;
+    optional string data_descriptor = 11;
+    optional string data_value = 12;
+    optional string payment_type = 13;
+    optional string auth_pay_method = 14;
+}
+
+message TransactionDetails {
+    optional string key = 1;
+    optional string value = 2;
+}
+
+message User {
+    optional uint32 id = 1;
+    optional string first_name = 2;
+    optional string last_name = 3;
+    optional string username = 4;
+}
+
+message Invoice {
+    optional uint32 id = 1;
+    optional string invoice_number = 2;
+    optional float total_invoice_amount = 3;
+    optional string status = 4;
+}
+
+message Settlements {
+    uint32 id = 1;
+    optional string payment_method_type = 2;
+    optional string payment_settlement_id = 3;
+    optional string payment_reference_number = 4;
+    optional float amount = 5;
+    optional string status = 6;
+    optional float refundable_amount = 7;
+    repeated RefundResponse transaction_refunds = 8;
+    optional string created_at = 9;
+    optional string updated_at = 10;
+}
+
+message Transaction {
+    optional uint32 id = 1;
+    optional string payment_method_type = 2;
+    optional string payment_transaction_id = 3;
+    optional uint32 user_payment_method_id = 4;
+    optional uint32 contact_payment_profile_id = 5;
+    optional string payment_reference_number = 6;
+    optional User user = 7;
+    optional Invoice invoice = 8;
+    optional string status = 9;
+    optional float amount = 10;
+    repeated Settlements settlements = 11;
+    repeated TransactionDetails transaction_details = 12;
+    optional string created_at = 13;
+    optional string updated_at = 14;
+}
+
+message CheckoutPaymentRequest {
+    optional PaymentDetails payment_detail = 1;
+    string payment_method = 2;
+}
+
+message PaymentResponse {
+    string response = 1;
+}
+
+message ProfilePaymentRequest {
+    uint32 invoice_id = 1;
+    string payment_method = 2;
+}
+
+message ReadTransactionRequest {
+    uint32 id = 1;
+}
+
+message ReadTransactionResponse {
+    Transaction transaction = 1;
+}
+
+message InvoiceItems{
+    uint32 id = 1;
+    bool is_taxable = 2;
+    float price = 3;
+    uint32 quantity = 4;
+    float total_amount = 5;
+    optional uint32 invoice_id = 6;
+}
+
+message RefundItems{
+    optional uint32 id = 1;
+    bool is_taxable = 2;
+    float tax_rate = 3;
+    float price = 4;
+    uint32 quantity = 5;
+    float total_amount = 6;
+    optional InvoiceItems invoice_item = 7;
+}
+
+
+message RefundResponse {
+    optional uint32 id = 1;
+    optional string payment_method_type = 2;
+    optional Transaction transaction = 3;
+    optional string payment_refund_id = 4;
+    optional string status = 5;
+    optional string reference_number = 6;
+    optional float amount = 7;
+    repeated TransactionDetails transaction_refund_details = 8;
+    repeated RefundItems refund_items = 9;
+    optional uint32 created_by = 10;
+    optional string created_at = 11;
+    optional string updated_at = 12;
+}
+
+message RefundTransactionRequest {
+    string payment_method_type = 1;
+    uint32 transaction_id = 2;
+    float amount = 3;
+}
+
+message RefundTransactionResponse {
+    string response = 1;
+}
+
+message ReadRefundRequest {
+    string refund_id = 1;
+}
+
+message ReadRefundResponse {
+    string response = 1;
+}
+
+message CancelRefundRequest {
+    uint32 id = 1;
+}
+
+message CancelRefundResponse {
+    string response = 1;
+}
+
+
+message ReadRefundByTransactionIdRequest {
+    uint32 transaction_id = 1;
+}
+
+message ReadRefundByTransactionIdResponse {
+    optional RefundResponse refund = 1;
+}
+
+message ListTransactionsRequest {
+    optional string filter = 1;
+    optional string order_by = 2;
+    optional string order_direction = 3;
+    optional string payment_method_type = 4;
+    optional uint32 user_id = 5;
+    optional uint32 user_payment_method_id = 6;
+    optional uint32 contact_payment_profile_id = 7;
+    optional uint32 invoice_id = 8;
+    optional uint32 page = 9;
+    optional uint32 limit = 10;
+    optional string start_date = 11;
+    optional string end_date = 12;
+}
+
+message Meta {
+    uint32 page = 2;
+    uint32 limit = 1;
+    uint32 current_items = 3;
+    uint32 total_items = 4;
+    
+}
+
+message ListTransactionsResponse {
+    optional Meta meta = 1;
+    repeated Transaction transactions = 2;
+}
+
+message ReadSettlementByTransactionIdRequest {
+    uint32 transaction_id = 1;
+}
+
+message ReadSettlementByTransactionIdResponse {
+    string settlement = 1;
+}
+
+message InvoiceItem {
+    uint32 id = 1;
+    uint32 quantity = 5;
+}
+
+message RefundInvoice {
+    int32 id = 1;
+    repeated InvoiceItem invoice_items = 2; 
+    float total_refund_amount = 4;
+}
+
+message PartiallyRefundInvoiceItemsRequest {
+    int32 transaction_id = 1;
+    RefundInvoice refund_invoice = 2;    
+}
+
+service TransactionService {
+    rpc CheckoutPayment (CheckoutPaymentRequest) returns (PaymentResponse);
+    rpc ProfilePayment (ProfilePaymentRequest) returns (PaymentResponse);
+    rpc ReadTransaction (ReadTransactionRequest) returns (ReadTransactionResponse);
+    rpc RefundTransaction(RefundTransactionRequest) returns (RefundTransactionResponse);
+    rpc ReadRefund(ReadRefundRequest) returns (ReadRefundResponse);
+    rpc CancelRefund(CancelRefundRequest) returns (CancelRefundResponse);
+    rpc ReadRefundByTransactionId(ReadRefundByTransactionIdRequest) returns (ReadRefundByTransactionIdResponse);
+    rpc ListTransactions(ListTransactionsRequest) returns (ListTransactionsResponse);
+    rpc ReadSettlementByTransactionId(ReadSettlementByTransactionIdRequest) returns (ReadSettlementByTransactionIdResponse);
+    rpc PartiallyRefundInvoiceItems(PartiallyRefundInvoiceItemsRequest) returns (RefundTransactionResponse);
+}

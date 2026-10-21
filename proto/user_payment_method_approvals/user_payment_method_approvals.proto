@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+package user_payment_method_approvals;
+
+option go_package = "user_payment_method_approvals";
+
+message UserPaymentMethodApproval {
+    optional uint32 id = 1;
+    optional uint32 user_id = 2;
+    string payment_method_type = 3;
+    string status = 4;
+    optional string created_at = 5;
+    optional uint32 created_by = 6;
+    optional string approved_at = 7;
+    optional string updated_at = 8;
+}
+
+message User {
+    uint32 id = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string username = 4;
+    bool active = 5;
+}
+
+message UserPaymentMethodApprovals {
+    uint32 id = 1;
+    User user = 2;
+    string payment_method_type = 3;
+    string status = 4;
+    optional uint32 is_default = 5;
+    string created_at = 6;
+    uint32 created_by = 7;
+    string approved_at = 8;
+    string updated_at = 9;
+}
+
+message CreateUserPaymentMethodApprovalRequest {
+    UserPaymentMethodApproval details = 1;
+}
+
+message CreateUserPaymentMethodApprovalResponse {
+    string message = 1;
+}
+
+message EditUserStatusRequest {
+    uint32 id = 1;
+    string status = 2;
+}
+
+message EditUserStatusResponse {
+    UserPaymentMethodApprovals details = 1;
+}
+
+message ReadPaymentApprovalByUserIdRequest {
+    uint32 user_id = 1;
+    optional string payment_method_type = 2;
+    optional string is_default = 3;
+}
+
+message ReadPaymentApprovalByUserIdResponse {
+    repeated UserPaymentMethodApprovals details = 1;
+}
+
+message ListPaymentApprovalsRequest {
+    optional string filter = 1;
+    optional string order_by = 2;
+    optional string order_direction = 3;
+    optional uint32 limit = 4;
+    optional uint32 page = 5;
+    optional uint32 user_id = 6;
+    optional string payment_method_type = 7;
+    optional string status = 8;
+    optional string is_default = 9;
+}
+
+message ListPaymentApprovalsResponse {
+    Meta meta = 1;
+    repeated UserPaymentMethodApprovals approvals = 2;
+}
+
+message Meta {
+    uint32 current_items = 1;
+    uint32 limit = 2;
+    uint32 page = 3;
+    uint32 total_items = 4;
+}
+
+message SendApproval {
+    string firstname = 1;
+    string username = 2;
+    string approval_message = 3;
+    string from = 4;
+    string to = 5;
+}
+
+message SendApprovalRequest {
+    SendApproval send_offer = 1;
+}
+
+message SendApprovalResponse {
+    bool result = 1; 
+}
+
+message SendPaymentSetupDetails {
+    string username = 1;
+    string entity_type = 2;
+    string dba = 3;
+    string owner = 4;
+    string owner_name = 5;
+    string account = 6;
+}
+
+message SendPaymentSetupDetailsRequest {
+    SendPaymentSetupDetails details = 1;
+}
+
+message SendPaymentSetupDetailsResponse {
+    bool result = 1;
+}
+
+service UserPaymentMethodApprovalsService {
+    rpc CreateUserPaymentMethodApproval (CreateUserPaymentMethodApprovalRequest) returns (CreateUserPaymentMethodApprovalResponse);
+    rpc EditUserStatus(EditUserStatusRequest) returns (EditUserStatusResponse);
+    rpc ReadPaymentApprovalByUserId(ReadPaymentApprovalByUserIdRequest) returns (ReadPaymentApprovalByUserIdResponse);
+    rpc ListPaymentApprovals(ListPaymentApprovalsRequest) returns (ListPaymentApprovalsResponse);
+    rpc SendPaymentSetupDetails(SendPaymentSetupDetailsRequest) returns (SendPaymentSetupDetailsResponse);
+}
