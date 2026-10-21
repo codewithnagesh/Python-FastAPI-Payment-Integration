@@ -1,4 +1,4 @@
-# Payments Service Kit — Clean Architecture Reference
+# Python FastAPI Integration Payments Service Kit — Clean Architecture Reference
 
 A compact, production‑minded payment layer built around explicit contracts (Protobuf/gRPC), thin HTTP adapters (FastAPI routers), isolated provider integrations, and a disciplined SQLAlchemy persistence tier.
 
